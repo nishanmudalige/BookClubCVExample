@@ -3,14 +3,37 @@ Cross Validation Example
 Nishan Mudalige
 2022-10-01
 
+``` r
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 ## Cross-Validation
+
+``` r
+# Required libraries for data analysis
+
+library(ISLR)
+library(ISLR2)
+```
+
+    ## 
+    ## Attaching package: 'ISLR2'
+
+    ## The following objects are masked from 'package:ISLR':
+    ## 
+    ##     Auto, Credit
+
+``` r
+library(bestglm)
+```
+
+    ## Loading required package: leaps
 
 ### Validation Set Approach
 
 Replicate the results in Figure 5.2
 
 ``` r
-library(ISLR)
 data(Auto)
 
 set.seed(6)
@@ -35,10 +58,10 @@ for(i in 1:10){
   MSE[i] = (sum((validation_set$mpg - fitted_values)^2)) / (n_valid - length(model$coefficients))
 }
 
-plot(MSE, type = "b", pch = 16)
+plot(MSE, type = "b", pch = 16, ylab = "MSE")
 ```
 
-![](ReadMe_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](ReadMe_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
 set.seed(1)
@@ -69,15 +92,64 @@ for(i in 1:10){
 
 
 colour_vec = adjustcolor(rainbow(10), alpha = 0.65)
-plot(MSE_list[[1]], type = "b", pch = 16, col = colour_vec[1], ylim=c(16,25))
+plot(MSE_list[[1]], type = "b", pch = 16, col = colour_vec[1], ylim=c(16,25), ylab = "MSE")
 
 for(i in 2:9){
   lines(MSE_list[[i]], type="b", pch = 16, col = colour_vec[i])  
 }
 ```
 
-![](ReadMe_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](ReadMe_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
+### Leave One Out Cross Validation (LOOCV)
+
+Replicate the results in Figure 5.4
+
+``` r
+X = Auto$horsepower
+Y = Auto$mpg
+
+loocv_list = NULL
+cv_data = NULL
+
+for(i in 1:10){
+  cv_data = cbind(cv_data, X^i)
+  loocv_list[[i]] = LOOCV(cv_data, Y)  
+}
+
+loocv_df = do.call(rbind.data.frame, loocv_list)
+names(loocv_df) = c("MSE", "SD of MSE")
+
+plot(loocv_df$MSE, type = "b", pch = 16, ylab = "MSE")
+```
+
+![](ReadMe_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+<!--
+# Define training control
+set.seed(123) 
+train.control <- trainControl(method = "cv", number = 10)
+# Train the model
+model <- train(Fertility ~., data = swiss, method = "lm",
+               trControl = train.control)
+# Summarize the results
+print(model)
+
+
+# library(kfoldcv4ts)
+# kfoldcv4ts::accuracy.kfold(df.VAR = data_VAR, k=3, n_ahead = 6, lags = opt.lags.AIC, var_index = 1)
+
+library(boot)
+
+nodal.glm <- glm(mpg ~ horsepower, data = Auto)
+cv.err <- cv.glm(Auto, nodal.glm, K = 5) 
+cv.err <- cv.glm(Auto, nodal.glm, K = nrow(Auto))
+
+cv.err$K
+cv.err$delta
+
+
+-->
 <!--
 ## R Markdown
 
