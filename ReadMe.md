@@ -3,6 +3,81 @@ Cross Validation Example
 Nishan Mudalige
 2022-10-01
 
+## Cross-Validation
+
+### Validation Set Approach
+
+Replicate the results in Figure 5.2
+
+``` r
+library(ISLR)
+data(Auto)
+
+set.seed(6)
+
+n = nrow(Auto)
+MSE = NULL
+
+training_set_indices = sample(n, n/2, replace = F)
+validation_set_indices = (1:n)[!(1:n %in% training_set_indices)]
+
+training_set = Auto[training_set_indices, ]
+validation_set = Auto[validation_set_indices, ]
+
+for(i in 1:10){
+  
+  n_valid = nrow(validation_set)
+
+  model = lm(mpg ~ poly(horsepower, i), data = training_set)
+
+  fitted_values = predict(model, validation_set)
+
+  MSE[i] = (sum((validation_set$mpg - fitted_values)^2)) / (n_valid - length(model$coefficients))
+}
+
+plot(MSE, type = "b", pch = 16)
+```
+
+![](ReadMe_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+``` r
+set.seed(1)
+
+MSE_list = NULL
+
+for(i in 1:10){
+  
+  training_set_indices = sample(n, n/2, replace = F)
+  validation_set_indices = (1:n)[!(1:n %in% training_set_indices)]
+  
+  training_set = Auto[training_set_indices, ]
+  validation_set = Auto[validation_set_indices, ]  
+  
+  for(j in 1:10){
+    
+    n_valid = nrow(validation_set)
+    
+    model = lm(mpg ~ poly(horsepower, j), data = training_set)
+    
+    fitted_values = predict(model, validation_set)
+    
+    MSE[j] = (sum((validation_set$mpg - fitted_values)^2)) / (n_valid - length(model$coefficients))
+  }
+  
+  MSE_list[[i]] = MSE
+}
+
+
+colour_vec = adjustcolor(rainbow(10), alpha = 0.65)
+plot(MSE_list[[1]], type = "b", pch = 16, col = colour_vec[1], ylim=c(16,25))
+
+for(i in 2:9){
+  lines(MSE_list[[i]], type="b", pch = 16, col = colour_vec[i])  
+}
+```
+
+![](ReadMe_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
 <!--
 ## R Markdown
 
