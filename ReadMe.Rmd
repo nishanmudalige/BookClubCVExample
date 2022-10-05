@@ -1,5 +1,5 @@
 ---
-title: "Cross Validation Example"
+title: "Replicating Some Results from An Introduction to Statistical Learning - Chapter 5: Resampling Methods"
 author: "Nishan Mudalige"
 date: '2022-10-01'
 output: github_document
