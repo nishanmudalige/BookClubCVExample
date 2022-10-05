@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(ISLR)
 library(ISLR2)
+library(boot)
+library(bestglm)
 ```
 
     ## 
@@ -61,7 +63,7 @@ for(i in 1:10){
 plot(MSE, type = "b", pch = 16, ylab = "MSE")
 ```
 
-![](ReadMe_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
 
 ``` r
 set.seed(1)
