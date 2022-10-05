@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(ISLR)
 library(ISLR2)
+library(boot)
 library(bestglm)
 ```
 
@@ -93,6 +94,8 @@ for(i in 2:9){
 Replicate the results in Figure 5.4
 
 ```{r}
+set.seed(9)
+
 X = Auto$horsepower
 Y = Auto$mpg
 
@@ -109,6 +112,40 @@ names(loocv_df) = c("MSE", "SD of MSE")
 
 plot(loocv_df$MSE, type = "b", pch = 16, ylab = "MSE")
 ```
+
+
+```{r}
+set.seed(12)
+
+cv.error.list = NULL
+
+for(i in 1:10){
+  
+  cv.error.10 <- rep(0, 10)
+  
+  for (j in 1:10) {
+    glm.fit <- glm(mpg ~ poly(horsepower, j), data = Auto)
+    cv.error.10[j] <- cv.glm(Auto, glm.fit, K = 10)$delta[1]
+  }
+  cv.error.list[[i]] = cv.error.10
+}
+
+# cv.error.list
+
+colour_vec = adjustcolor(rainbow(10), alpha = 0.65)
+
+plot(cv.error.list[[1]], type = "b", pch = 16, 
+     col = colour_vec[1], ylim=c(18, 25),
+     ylab = "MSE", xlab = "Degree of polynomial")
+
+for(i in 2:9){
+  lines(cv.error.list[[i]], type = "b", pch = 16, col = colour_vec[i])
+}
+```
+
+
+
+
 
 
 <!--

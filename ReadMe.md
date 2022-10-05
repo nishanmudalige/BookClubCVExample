@@ -13,10 +13,15 @@ knitr::opts_chunk$set(echo = TRUE)
 # Required libraries for data analysis
 
 library(ISLR)
-library(ISLR2)
-library(boot)
-library(bestglm)
 ```
+
+    ## Warning: package 'ISLR' was built under R version 4.1.3
+
+``` r
+library(ISLR2)
+```
+
+    ## Warning: package 'ISLR2' was built under R version 4.1.3
 
     ## 
     ## Attaching package: 'ISLR2'
@@ -26,10 +31,15 @@ library(bestglm)
     ##     Auto, Credit
 
 ``` r
+library(boot)
 library(bestglm)
 ```
 
+    ## Warning: package 'bestglm' was built under R version 4.1.3
+
     ## Loading required package: leaps
+
+    ## Warning: package 'leaps' was built under R version 4.1.3
 
 ### Validation Set Approach
 
@@ -63,7 +73,7 @@ for(i in 1:10){
 plot(MSE, type = "b", pch = 16, ylab = "MSE")
 ```
 
-
+![](ReadMe_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
 set.seed(1)
@@ -108,6 +118,8 @@ for(i in 2:9){
 Replicate the results in Figure 5.4
 
 ``` r
+set.seed(9)
+
 X = Auto$horsepower
 Y = Auto$mpg
 
@@ -126,6 +138,37 @@ plot(loocv_df$MSE, type = "b", pch = 16, ylab = "MSE")
 ```
 
 ![](ReadMe_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+set.seed(12)
+
+cv.error.list = NULL
+
+for(i in 1:10){
+  
+  cv.error.10 <- rep(0, 10)
+  
+  for (j in 1:10) {
+    glm.fit <- glm(mpg ~ poly(horsepower, j), data = Auto)
+    cv.error.10[j] <- cv.glm(Auto, glm.fit, K = 10)$delta[1]
+  }
+  cv.error.list[[i]] = cv.error.10
+}
+
+# cv.error.list
+
+colour_vec = adjustcolor(rainbow(10), alpha = 0.65)
+
+plot(cv.error.list[[1]], type = "b", pch = 16, 
+     col = colour_vec[1], ylim=c(18, 25),
+     ylab = "MSE", xlab = "Degree of polynomial")
+
+for(i in 2:9){
+  lines(cv.error.list[[i]], type = "b", pch = 16, col = colour_vec[i])
+}
+```
+
+![](ReadMe_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 <!--
 # Define training control
