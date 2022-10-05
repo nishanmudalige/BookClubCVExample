@@ -117,7 +117,6 @@ plot(loocv_df$MSE, type = "b", pch = 16, ylab = "MSE")
 
 ### K-Fold Cross Validation (LOOCV)
 
-
 ```{r}
 set.seed(12)
 
