@@ -91,7 +91,7 @@ for(i in 2:9){
 
 ### Leave One Out Cross Validation (LOOCV)
 
-Replicate the results in Figure 5.4
+Replicate the result in the right left panel in Figure 5.4
 
 ```{r}
 set.seed(9)
@@ -112,6 +112,10 @@ names(loocv_df) = c("MSE", "SD of MSE")
 
 plot(loocv_df$MSE, type = "b", pch = 16, ylab = "MSE")
 ```
+
+
+
+### K-Fold Cross Validation (LOOCV)
 
 
 ```{r}
