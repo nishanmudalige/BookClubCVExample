@@ -1,12 +1,18 @@
 library(ISLR)
 library(ISLR2)
+library(boot)
+library(bestglm)
+
+### 
 
 data(Auto)
+
+###
 
 n = nrow(Auto)
 MSE = NULL
 
-# 6, 9, 12
+# Some good seeds for plots 6, 9, 12
 set.seed(6)
 
 training_set_indices = sample(n, n/2, replace = F)
@@ -30,7 +36,7 @@ for(i in 1:10){
 plot(MSE, type = "b", pch = 16)
 
 
-
+###
 
 set.seed(1)
 
@@ -65,7 +71,6 @@ plot(MSE_list[[1]], type = "b", pch = 16, col = colour_vec[1], ylim=c(16,25))
 for(i in 2:9){
   lines(MSE_list[[i]], type="b", pch = 16, col = colour_vec[i])  
 }
-
 
 
 ###
