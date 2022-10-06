@@ -18,6 +18,7 @@ library(ISLR)
 library(ISLR2)
 library(boot)
 library(bestglm)
+library(npreg)
 ```
 
 ### Validation Set Approach
@@ -146,6 +147,61 @@ for(i in 2:9){
 ```
 
 
+### Attempting to recreate figure similar to Figure 2.9
+
+```{r}
+library(matlib)
+
+# Visually estimating 4 points from 
+
+x1 = 32;  y1 = 6
+x2 = 40;  y2 = 7.1
+x3 = 47;  y3 = 7.95
+x4 = 70;  y4 = 9.25
+
+
+A = rbind(c(1, x1, x1^2, x1^3),
+          c(1, x2, x2^2, x2^3),
+          c(1, x3, x3^2, x3^3),
+          c(1, x4, x4^2, x4^3))
+
+b = c(y1, y2, y3, y4)
+
+ge_solve = gaussianElimination(A, b)
+
+# Function to obtain coefficients of cubic polynomial
+f = function(x){
+  ge_solve[1,5]  +  ge_solve[2,5]*x  +  ge_solve[3,5]*x^2  +  ge_solve[4,5]*x^3
+}
+
+x = seq(0, 100, by=0.75)
+y = sapply(x, f)
+
+# plot(x, y, type = "l")
+
+# Add some noise
+sim_y = y + rnorm(length(y), 0, 0.25)
+sim_x = x + rnorm(length(x), 0, 2)
+
+# Create linear model
+linear_model = lm(sim_y ~ sim_x)
+
+
+# Create smoothing Spline
+model_spline_A <- ss(sim_x, sim_y, nknots = 3)
+model_spline_B <- ss(sim_x, sim_y, nknots = 10)
+
+plot(x, y, xlab = "X", ylab = "Y")
+points(sim_x, sim_y)
+lines(sim_x, predict(linear_model, data.frame(sim_x)), col = "orange", lwd=2)
+lines(x, model_spline_A$y, col = "lightblue", lwd = 2)
+lines(x, model_spline_B$y, col = "springgreen3", lwd = 2)
+```
+
+
+<!-- ### Variance biase tradeoff -->
+<!-- https://towardsdatascience.com/understanding-the-bias-variance-tradeoff-165e6942b229 -->
+<!-- The Error can be decomposed into the bias^2 + variance + some irreducible error -->
 
 
 
